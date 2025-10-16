@@ -2,6 +2,17 @@ TBD
 ===
 Unreleased changes. Release notes have not yet been written.
 
+Platform support:
+
+* `aarch64` for Windows now has release artifacts.
+* `powerpc64` no longer has release artifacts generated for it. The CI
+  release workflow stopped working, and I didn't deem it worth my time to
+  debug it. If someone wants this and can test it, I'd be happy to add it
+  back.
+* ripgrep binaries are now compiled with full LTO enabled. You may notice
+  small performance improvements from this and a modest decrease in binary
+  size.
+
 Performance improvements:
 
 * [PERF #2111](https://github.com/BurntSushi/ripgrep/issues/2111):

@@ -25,13 +25,13 @@ jobs:
       - name: Show the version
         run: |
           echo "version is: $VERSION"
-      # - name: Check that tag version and Cargo.toml version are the same
-      #   shell: bash
-      #   run: |
-      #     if ! grep -q "version = \"$VERSION\"" Cargo.toml; then
-      #       echo "version does not match Cargo.toml" >&2
-      #       exit 1
-      #     fi
+      - name: Check that tag version and Cargo.toml version are the same
+        shell: bash
+        run: |
+          if ! grep -q "version = \"$VERSION\"" Cargo.toml; then
+            echo "version does not match Cargo.toml" >&2
+            exit 1
+          fi
       - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -110,12 +110,6 @@ jobs:
           target: s390x-unknown-linux-gnu
           strip: s390x-linux-gnu-strip
           qemu: qemu-s390x
-        - build: stable-riscv64
-          os: ubuntu-latest
-          rust: stable
-          target: riscv64gc-unknown-linux-gnu
-          strip: riscv64-linux-gnu-strip
-          qemu: qemu-riscv64
         - build: macos
           os: macos-latest
           rust: nightly
@@ -188,7 +182,7 @@ jobs:
     - name: Build release binary
       shell: bash
       run: |
-        ${{ env.CARGO }} build --verbose --release --features pcre2 ${{ env.TARGET_FLAGS }}
+        ${{ env.CARGO }} build --verbose --profile release-lto --features pcre2 ${{ env.TARGET_FLAGS }}
         if [[ "${{ matrix.os }}" == windows-* ]]; then
           bin="target/${{ matrix.target }}/release/rg.exe"
         else
@@ -371,6 +365,7 @@ jobs:
       shell: bash
       run: |
         cd "$DEB_DIR"
+        ls -lh
         sum="$DEB_NAME.sha256"
         shasum -a 256 "$DEB_NAME" > "$sum"
         echo "SUM=$sum" >> $GITHUB_ENV
